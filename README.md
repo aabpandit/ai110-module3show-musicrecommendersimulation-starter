@@ -2,33 +2,20 @@
 
 ## Project Summary
 
-In this project you will build and explain a small music recommender system.
+Real-world music recommenders like Spotify combine content-based filtering (what songs sound like) and collaborative filtering (what people similar to you have listened to). Because our data is pursely just songs and their metadata, this project focuses on content-based filtering. The system compares each song's attributes directly against a user's stated preferences and assigns a score based on how close the match is. It rewards songs for being the right fit for a specific user. I will be using the following scoring rules: the system prioritizes genre as the strongest signal, followed by energy proximity, then mood, and  danceability.
 
-Your goal is to:
-
-- Represent songs and a user "taste profile" as data
-- Design a scoring rule that turns that data into recommendations
-- Evaluate what your system gets right and wrong
-- Reflect on how this mirrors real world AI recommenders
-
-Replace this paragraph with your own summary of what your version does.
+Song: genre, mood, energy, dancebility
+UserProfile: favGenre, favMood, targetEnergy, likesAcoustic
 
 ---
 
 ## How The System Works
 
-Explain your design in plain language.
+A song's attributes such as genre, mood, energy, etc are captured in the data. The UserProfile stores variables like favGenre, favMood, target_energy (a number between 0 and 1 representing intense/gentle music preferance), and a likesAcoustic (instrumental/synthesized sounds preference). Importantly, the profile stores a target — not a minimum or maximum — which means the system rewards songs that are closest to what the user described, not songs that simply score highest on any individual feature.
 
-Some prompts to answer:
+Once this UserProfile is created, each song is evaluated by computing four separate sub-scores and combining them into one final number. Those four sub-scores are then multiplied by weights that reflect their importance: genre carries 35%, energy 30%, mood 20%, and danceability 15%, summing to a final score between 0.0 and 1.0. Then the songs are ranked by their score and the top k results are returned as recommendations. 
 
-- What features does each `Song` use in your system
-  - For example: genre, mood, energy, tempo
-- What information does your `UserProfile` store
-- How does your `Recommender` compute a score for each song
-- How do you choose which songs to recommend
-
-You can include a simple diagram or bullet list if helpful.
-
+Genre matching is binary so despite two genres being somewhat related, the current recommendation system will not capture that.
 ---
 
 ## Getting Started
