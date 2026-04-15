@@ -55,25 +55,18 @@ You can add more tests in `tests/test_recommender.py`.
 
 ## Experiments You Tried
 
-Use this section to document the experiments you ran. For example:
+When there was a shift in weights from double the importance of energy and half the importance of genre.Songs in the wrong genre but with matching energy rank much higher than they did before.
 
-- What happened when you changed the weight on genre from 2.0 to 0.5
-- What happened when you added tempo or valence to the score
-- How did your system behave for different types of users
+
+![alt text](image.png) #initial output
+![alt text](image-1.png) #new 3 user profiles (1 and 2)
+![alt text](image-2.png) #new 3 user profiles (3)
 
 ---
 
 ## Limitations and Risks
 
-Summarize some limitations of your recommender.
-
-Examples:
-
-- It only works on a tiny catalog
-- It does not understand lyrics or language
-- It might over favor one genre or mood
-
-You will go deeper on this in your model card.
+The model treated genre match as a binary classifier. So it remained fixated on matching the genre or not matching at all. This prevented it from recognizing similar genres, also because it was weigned similarly to energy. From the output: The EDM Listener's top 3 were Pulse Protocol (electronic), Neon Bloom (k-pop), and Gym Hero (pop). Night Drive Loop, a synthwave song, is the most electronically adjacent genre in the catalog but scored only 0.53 and didn't make the top 3, ranked below k-pop purely because Neon Bloom shared the euphoric mood.
 
 ---
 
@@ -195,4 +188,3 @@ A few sentences about what you learned:
 - What surprised you about how your system behaved
 - How did building this change how you think about real music recommenders
 - Where do you think human judgment still matters, even if the model seems "smart"
-

@@ -77,34 +77,43 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
     """
     reasons = []
 
-    # Genre: binary match — weight 0.35
+    # Weights: genre halved, energy doubled, then normalized so sum = 1.0
+    # Raw intent: genre 0.35->0.175, energy 0.30->0.60, mood 0.20, dance 0.15 (sum=1.125)
+    # Normalized:  0.175/1.125     0.60/1.125          0.20/1.125  0.15/1.125 (sum=1.00)
+    W_GENRE = 0.16
+    W_MOOD  = 0.18
+    W_ENERGY = 0.53
+    W_DANCE  = 0.13
+    # Verify: 0.16 + 0.18 + 0.53 + 0.13 == 1.00
+
+    # Genre: binary match — weight 0.16
     genre_score = 1.0 if song["genre"] == user_prefs.get("genre", "") else 0.0
     if genre_score == 1.0:
         reasons.append(f"genre match ({song['genre']})")
     else:
         reasons.append(f"genre mismatch ({song['genre']} != {user_prefs.get('genre', '?')})")
 
-    # Mood: binary match — weight 0.20
+    # Mood: binary match — weight 0.18
     mood_score = 1.0 if song["mood"] == user_prefs.get("mood", "") else 0.0
     if mood_score == 1.0:
         reasons.append(f"mood match ({song['mood']})")
     else:
         reasons.append(f"mood mismatch ({song['mood']})")
 
-    # Energy: proximity score — weight 0.30
+    # Energy: proximity score — weight 0.53
     target_energy = user_prefs.get("energy", 0.5)
     energy_score = 1.0 - abs(target_energy - song["energy"])
     reasons.append(f"energy {song['energy']:.2f} vs target {target_energy:.2f}")
 
-    # Danceability: proximity score — weight 0.15
+    # Danceability: proximity score — weight 0.13
     target_dance = user_prefs.get("danceability", 0.5)
     dance_score = 1.0 - abs(target_dance - song["danceability"])
 
     score = (
-        0.35 * genre_score
-        + 0.20 * mood_score
-        + 0.30 * energy_score
-        + 0.15 * dance_score
+        W_GENRE  * genre_score
+        + W_MOOD   * mood_score
+        + W_ENERGY * energy_score
+        + W_DANCE  * dance_score
     )
 
     return round(score, 4), reasons
